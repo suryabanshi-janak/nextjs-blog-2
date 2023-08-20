@@ -1,5 +1,8 @@
 import { notFound } from 'next/navigation';
-import { allDocs } from 'contentlayer/generated';
+import { allPosts } from 'contentlayer/generated';
+import { Mdx } from '@/components/mdx-components';
+
+import '@/styles/mdx.css';
 
 interface Props {
   params: {
@@ -7,18 +10,22 @@ interface Props {
   };
 }
 
-async function getDocFromParams(slug: string) {
-  const doc = allDocs.find((doc) => doc.slugAsParams === slug);
+async function getPostFromParams(slug: string) {
+  const post = allPosts.find((post) => post.slugAsParams === slug);
 
-  if (!doc) notFound();
+  if (!post) notFound();
 
-  return doc;
+  return post;
 }
 
 async function page({ params }: Props) {
-  const doc = await getDocFromParams(params.slug);
+  const post = await getPostFromParams(params.slug);
 
-  return <div>{JSON.stringify(doc)}</div>;
+  return (
+    <article className='container relative max-w-3xl py-6 lg:py-10'>
+      <Mdx code={post.body.code} />
+    </article>
+  );
 }
 
 export default page;
